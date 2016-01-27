@@ -246,8 +246,11 @@ public class CityConnect {
 	 *            checking the first word to be 'addroute')
 	 * @return status of the operation
 	 */
-	private static String addRoute(String userCommand) {
-		
+	private static String addRoute(String userCommand) {	
+		return processValidityRouteBeforeAddingRoute(userCommand);
+	}
+
+	private static String processValidityRouteBeforeAddingRoute(String userCommand) {
 		String[] parameters = splitParameters(removeFirstWord(userCommand));
 		
 		if (parameters.length < PARAM_SIZE_FOR_ADD_ROUTE){
