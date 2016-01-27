@@ -258,7 +258,7 @@ public class CityConnect {
 	private static String processValidityRouteBeforeAddingRoute(String userCommand) {
 		String[] parameters = splitParameters(removeFirstWord(userCommand));
 		
-		if (parameters.length < PARAM_SIZE_FOR_ADD_ROUTE){
+		if (checkParametersLength(parameters)){
 			return invalidFormatMessage(userCommand);
 		}
 
@@ -280,6 +280,10 @@ public class CityConnect {
 				slotPosition);
 
 		return addedRouteMessage(newStartLocation, newEndLocation, distance);
+	}
+
+	private static boolean checkParametersLength(String[] parameters) {
+		return parameters.length < PARAM_SIZE_FOR_ADD_ROUTE;
 	}
 
 	private static String invalidFormatMessage(String userCommand) {
