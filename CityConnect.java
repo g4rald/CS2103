@@ -286,7 +286,7 @@ public class CityConnect {
 
 		int slotPosition = location(newStartLocation, newEndLocation);
 
-		if (slotPosition == SLOT_UNAVAILABLE){
+		if (noSlotToStoreRoute(slotPosition)){
 			return MESSAGE_NO_SPACE;
 		}
 
@@ -294,6 +294,10 @@ public class CityConnect {
 				slotPosition);
 
 		return addedRouteMessage(newStartLocation, newEndLocation, distance);
+	}
+
+	private static boolean noSlotToStoreRoute(int slotPosition) {
+		return slotPosition == SLOT_UNAVAILABLE;
 	}
 
 	private static boolean checkParametersLength(String[] parameters) {
