@@ -125,7 +125,7 @@ public class CityConnect {
 	}
 
 	public static String executeCommand(String userCommand) {
-		if (userCommand.trim().equals(""))
+		if (userEnterNothing(userCommand))
 			return invalidFormatMessage(userCommand);
 
 		String commandTypeString = getFirstWord(userCommand);
@@ -151,6 +151,10 @@ public class CityConnect {
 		 * That is why we use an Error instead of an Exception.
 		 * ====================================================================
 		 */
+	}
+
+	private static boolean userEnterNothing(String userCommand) {
+		return userCommand.trim().equals("");
 	}
 
 	/*
