@@ -128,9 +128,7 @@ public class CityConnect {
 		if (userEnterNothing(userCommand))
 			return invalidFormatMessage(userCommand);
 
-		String commandTypeString = getFirstWord(userCommand);
-
-		COMMAND_TYPE commandType = determineCommandType(commandTypeString);
+		COMMAND_TYPE commandType = getCommand(userCommand);
 
 		switch (commandType) {
 		case ADD_ROUTE:
@@ -151,6 +149,13 @@ public class CityConnect {
 		 * That is why we use an Error instead of an Exception.
 		 * ====================================================================
 		 */
+	}
+
+	private static COMMAND_TYPE getCommand(String userCommand) {
+		String commandTypeString = getFirstWord(userCommand);
+
+		COMMAND_TYPE commandType = determineCommandType(commandTypeString);
+		return commandType;
 	}
 
 	private static boolean userEnterNothing(String userCommand) {
