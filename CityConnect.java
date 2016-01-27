@@ -204,6 +204,12 @@ public class CityConnect {
 
 		int position = getPositionOfExistingRoute(newStartLocation, newEndLocation);
 
+		return calculateDistance(newStartLocation, newEndLocation, position);
+
+	}
+
+	private static String calculateDistance(String newStartLocation,
+			String newEndLocation, int position) {
 		if (position == NOT_FOUND) {
 			return String.format(MESSAGE_NO_ROUTE, newStartLocation,
 					newEndLocation);
@@ -213,7 +219,6 @@ public class CityConnect {
 			return String.format(MESSAGE_DISTANCE, newStartLocation, newEndLocation,
 					route[position][STORAGE_POSITION_DISTANCE]);
 		}
-
 	}
 
 	/**
