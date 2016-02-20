@@ -135,7 +135,7 @@ public class TextBuddy {
 
 		try {
 			int lineNumber = sc.nextInt();
-			if (invalidLineNumber(lineNumber)) {
+			if (isInvalidLineNumber(lineNumber)) {
 				showMessage(MESSAGE_INVALID_COMMAND, null);
 				isValidDelete = false;
 				return INVALID_LINE_NUMBER;
@@ -214,11 +214,11 @@ public class TextBuddy {
 	 */
 	public static void displayFileContent() throws IOException {
 		String readText;
-		int lineNo = START_LINE;
+		int lineNumber = START_LINE;
 		BufferedReader in = new BufferedReader(new FileReader(givenFileName));
 		while ((readText = in.readLine()) != null) {
-			System.out.println(lineNo + ". " + readText);
-			lineNo++;
+			System.out.println(lineNumber + ". " + readText);
+			lineNumber++;
 		}
 		in.close();
 	}
@@ -332,7 +332,7 @@ public class TextBuddy {
 	/**
 	 * Check if line number is within range.
 	 */
-	public static boolean invalidLineNumber(int lineNumber) {
+	public static boolean isInvalidLineNumber(int lineNumber) {
 		return lineNumber <= EMPTY || lineNumber > totalLinesInFile;
 	}
 
