@@ -40,12 +40,9 @@ public class TextBuddy {
 	// list of invalid messages to be printed by program
 	static final String MESSAGE_CORRECT_USAGE = "\nCorrect usage : java TextBuddy <filename>.txt";
 	static final String MESSAGE_INVALID_COMMAND = "Invalid command! Please retry.";
-	static final String MESSAGE_INVALID_ARGUMENT = "Invalid argument entered."
-			+ MESSAGE_CORRECT_USAGE;
-	static final String MESSAGE_INVALID_EXTENSION = "Invalid file extension entered."
-			+ MESSAGE_CORRECT_USAGE;
-	static final String MESSAGE_NO_ARGUMENTS = "No arguments entered. Please enter argument."
-			+ MESSAGE_CORRECT_USAGE;
+	static final String MESSAGE_INVALID_ARGUMENT = "Invalid argument entered." + MESSAGE_CORRECT_USAGE;
+	static final String MESSAGE_INVALID_EXTENSION = "Invalid file extension entered." + MESSAGE_CORRECT_USAGE;
+	static final String MESSAGE_NO_ARGUMENTS = "No arguments entered. Please enter argument." + MESSAGE_CORRECT_USAGE;
 
 	// to indicate if the line number to be deleted is invalid (negative
 	// number/wrong format)
@@ -91,7 +88,7 @@ public class TextBuddy {
 	 */
 	public static void main(String[] args) throws IOException {
 		checkCorrectArguments(args);
-		welcomeMessage();
+		showWelcomeMessage();
 		startProgram();
 	}
 
@@ -142,7 +139,6 @@ public class TextBuddy {
 	public static void checkFileIsEmpty() {
 		File file = new File(givenFileName);
 		if (file.length() == EMPTY) {
-			System.out.println("EMPTTTTTTTTASDASDAD");
 			isFileEmpty = true;
 		} else {
 			isFileEmpty = false;
@@ -357,18 +353,18 @@ public class TextBuddy {
 
 	private static void searchCommand(Scanner sc) throws IOException {
 		String readText;
-		String getWord = sc.nextLine();
-		String searchedWord = getWord.trim();
-		System.out.println("Searching word : " + searchedWord);
-		int lineNo = START_LINE;
+		String searchedWord = trimWord(sc);
 		BufferedReader in = new BufferedReader(new FileReader(givenFileName));
+		int lineNo = START_LINE;
+		int totalResult = 0;
 		while ((readText = in.readLine()) != null) {
 			if (readText.toLowerCase().contains(searchedWord.toLowerCase())) {
 				System.out.println(lineNo + ". " + readText);
+				totalResult++;
 				lineNo++;
 			}
 		}
-		System.out.println("Total lines : " + (lineNo - 1));
+		System.out.println("Total results : " + (totalResult));
 		in.close();
 	}
 
@@ -377,13 +373,11 @@ public class TextBuddy {
 	 */
 	public static void showMessage(String message, String item) {
 		if (message.equalsIgnoreCase("ADDED")) {
-			System.out.println("added to " + givenFileName + ": \"" + item
-					+ "\"");
+			System.out.println("added to " + givenFileName + ": \"" + item + "\"");
 		} else if (message.equalsIgnoreCase("CLEAR")) {
 			System.out.println("all content deleted from " + givenFileName);
 		} else if (message.equalsIgnoreCase("DELETE")) {
-			System.out.println("deleted from " + givenFileName + ": \"" + item
-					+ "\"");
+			System.out.println("deleted from " + givenFileName + ": \"" + item + "\"");
 		} else if (message.equalsIgnoreCase("EMPTY")) {
 			System.out.println(givenFileName + " is empty");
 		} else {
@@ -426,15 +420,20 @@ public class TextBuddy {
 	/**
 	 * Store the new updated string which is used in updating the file content.
 	 */
-	public static void storeUpdatedText(String text,
-			boolean isNewFirstLineInFile) {
+	public static void storeUpdatedText(String text, boolean isNewFirstLineInFile) {
 		if (isNewFirstLineInFile) {
 			updatedText += text;
 		} else {
 			updatedText += "\n" + text;
 		}
 	}
-
+	
+	public static String trimWord(Scanner sc) {
+		String word = sc.nextLine();
+		String trimmedWord = word.trim();
+		return trimmedWord;
+	}
+	
 	/**
 	 * Replace the file content with the updated string.
 	 */
@@ -443,7 +442,6 @@ public class TextBuddy {
 		if (totalLines != EMPTY) {
 			fw.println(text);
 		}
-
 		fw.close();
 		updatedText = "";
 	}
@@ -458,9 +456,8 @@ public class TextBuddy {
 	/**
 	 * Display the welcome messsage.
 	 */
-	public static void welcomeMessage() {
-		System.out.println("Welcome to TextBuddy. " + givenFileName
-				+ " is ready for use");
+	public static void showWelcomeMessage() {
+		System.out.println("Welcome to TextBuddy. " + givenFileName + " is ready for use");
 	}
 
 	/**
@@ -468,8 +465,7 @@ public class TextBuddy {
 	 * text into file and update total lines in file.
 	 */
 	public static String writeTextToFile(Scanner sc) throws IOException {
-		String textToBeWritten = sc.nextLine();
-		textToBeWritten = textToBeWritten.trim();
+		String textToBeWritten = trimWord(sc);
 		PrintWriter fw = new PrintWriter(new BufferedWriter(new FileWriter(
 				givenFileName, true)));
 		fw.println(textToBeWritten);
