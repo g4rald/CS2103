@@ -51,6 +51,7 @@ public class TextBuddy {
 	static final int START_LINE = 1;
 	static final int INCREASE_LINE = 1;
 	static final int DECREASE_LINE = -1;
+	static final String SUCCESS = "";
 	static boolean isFileEmpty = true;
 	static boolean isValidDelete = true;
 	static int totalLinesInFile = 0;
@@ -76,9 +77,9 @@ public class TextBuddy {
 	/**
 	 * Add the text user entered into the file and display the added message.
 	 */
-	public static void addCommand(Scanner sc) throws IOException {
+	public static String addCommand(Scanner sc) throws IOException {
 		String text = writeTextToFile(sc);
-		printMessage(messageType("ADDED", text));
+		return printMessage(messageType("ADDED", text));
 	}
 	
 	/**
@@ -104,13 +105,13 @@ public class TextBuddy {
 	 * Check if the file contains any text content. If file is empty, display
 	 * empty message. Otherwise, display file content.
 	 */
-	public static void checkEmptyElseDisplayFileContent() throws IOException {
+	public static String checkEmptyElseDisplayFileContent() throws IOException {
 		checkFileIsEmpty();
 
 		if (isFileEmpty) {
-			printMessage(messageType("EMPTY", null));
+			return printMessage(messageType("EMPTY", null));
 		} else {
-			displayFileContent();
+			return displayFileContent();
 		}
 	}
 
@@ -153,9 +154,9 @@ public class TextBuddy {
 	/**
 	 * Clear the file content and display clear message.
 	 */
-	public static void clearCommand() throws IOException {
+	public static String clearCommand() throws IOException {
 		clearTextInFile();
-		printMessage(messageType("CLEAR", givenFileName));
+		return printMessage(messageType("CLEAR", givenFileName));
 	}
 
 	/**
@@ -171,10 +172,13 @@ public class TextBuddy {
 	 * Check if line to delete is a valid line. If so, delete the line and
 	 * update the new file content. Otherwise, display invalid message.
 	 */
-	public static void deleteCommand(Scanner sc) throws IOException {
+	public static String deleteCommand(Scanner sc) throws IOException {
 		int lineNumberToDelete = checkValidLineNumber(sc);
 		if (isValidDelete) {
-			deleteLineAndUpdateFile(lineNumberToDelete);
+			return deleteLineAndUpdateFile(lineNumberToDelete);
+		}
+		else {
+			return printMessage(messageType(MESSAGE_INVALID_COMMAND, null));
 		}
 	}
 
@@ -182,15 +186,16 @@ public class TextBuddy {
 	 * Read the file, delete/ignore the line indicated by user,
 	 * and update the file.
 	 */
-	public static void deleteLineAndUpdateFile(int lineToDelete)
+	public static String deleteLineAndUpdateFile(int lineToDelete)
 			throws IOException {
 		BufferedReader in = new BufferedReader(new FileReader(givenFileName));
 		int currentLine = START_LINE;
 		boolean isNewFirstLineInFile = true;
 		String text;
+		String deletedText = "";
 		while ((text = in.readLine()) != null) {
 			if (currentLine == lineToDelete) {
-				printMessage(messageType("DELETE", text));
+				deletedText = text;
 				updateTotalLines(DECREASE_LINE);
 			} else {
 				storeUpdatedText(text, isNewFirstLineInFile);
@@ -200,19 +205,20 @@ public class TextBuddy {
 		}
 		in.close();
 		updateFile(updatedText);
+		return printMessage(messageType("DELETE", deletedText));
 	}
 
 	/**
 	 * Check if file is empty before displaying empty message or file content
 	 */
-	public static void displayCommand() throws IOException {
-		checkEmptyElseDisplayFileContent();
+	public static String displayCommand() throws IOException {
+		return checkEmptyElseDisplayFileContent();
 	}
 
 	/**
 	 * Display the file content with the numbering at the left hand.
 	 */
-	public static void displayFileContent() throws IOException {
+	public static String displayFileContent() throws IOException {
 		String readText;
 		int lineNumber = START_LINE;
 		BufferedReader in = new BufferedReader(new FileReader(givenFileName));
@@ -221,29 +227,30 @@ public class TextBuddy {
 			lineNumber++;
 		}
 		in.close();
+		return SUCCESS;
 	}
 
 	/**
 	 * Execute the user command.
 	 */
-	public static void executeCommand(Scanner sc, String command)
+	public static String executeCommand(Scanner sc, String command)
 			throws IOException {
 		if (command.equalsIgnoreCase("add")) {
-			addCommand(sc);
+			return addCommand(sc);
 		} else if (command.equalsIgnoreCase("display")) {
-			displayCommand();
+			return displayCommand();
 		} else if (command.equalsIgnoreCase("delete")) {
-			deleteCommand(sc);
+			return deleteCommand(sc);
 		} else if (command.equalsIgnoreCase("clear")) {
-			clearCommand();
+			return clearCommand();
 		} else if (command.equalsIgnoreCase("exit")) {
-			exitCommand();
+			return exitCommand();
 		} else if (command.equalsIgnoreCase("sort")) {
-			sortCommand();
+			return sortCommand();
 		} else if (command.equalsIgnoreCase("search")) {
-			searchCommand(sc);
+			return searchCommand(sc);
 		} else {
-			invalidCommand();
+			return invalidCommand();
 		}
 	}
 
@@ -251,7 +258,7 @@ public class TextBuddy {
 	 * Exit the program. If the given file is empty, delete it off from local
 	 * disk. Otherwise, keep it saved in local disk.
 	 */
-	public static void exitCommand() {
+	public static String exitCommand() {
 		checkFileIsEmpty();
 		File file = new File(givenFileName);
 		if (isFileEmpty) {
@@ -259,6 +266,7 @@ public class TextBuddy {
 		}
 
 		System.exit(0);
+		return SUCCESS;
 	}
 
 	/**
@@ -325,8 +333,8 @@ public class TextBuddy {
 	/**
 	 * Display invalid message if user entered an invalid command.
 	 */
-	public static void invalidCommand() {
-		printMessage(messageType(MESSAGE_INVALID_COMMAND, null));
+	public static String invalidCommand() {
+		return printMessage(messageType(MESSAGE_INVALID_COMMAND, null));
 	}
 
 	/**
@@ -389,18 +397,18 @@ public class TextBuddy {
 	/**
 	 * Print the given message tpye
 	 */
-	public static void printMessage(String message) {
+	public static String printMessage(String message) {
 		System.out.println(message);
+		return message;
 	}
 
 	/**
 	 * Get user searched word, perform search and display results
 	 */
-	public static void searchCommand(Scanner sc) throws IOException {
+	public static String searchCommand(Scanner sc) throws IOException {
 		String searchedWord = trimWord(sc);
 		String totalResult = performSearch(searchedWord);
-		printMessage(messageType("SEARCH",totalResult));
-
+		return printMessage(messageType("SEARCH",totalResult));
 	}
 
 	/**
@@ -414,11 +422,11 @@ public class TextBuddy {
 	 * Get the data in file and put in arraylist for sorting, 
 	 * extract the sorted data, update the file and display message.
 	 */
-	public static void sortCommand() throws IOException {
+	public static String sortCommand() throws IOException {
 		ArrayList<String> sortedList = sortFile();
 		extractSortedText(sortedList);
 		updateFile(updatedText);
-		printMessage(messageType("SORT",givenFileName));
+		return printMessage(messageType("SORT",givenFileName));
 	}
 	
 	/**
