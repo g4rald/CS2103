@@ -351,21 +351,32 @@ public class TextBuddy {
 		return (fileName.length == EMPTY);
 	}
 
-	private static void searchCommand(Scanner sc) throws IOException {
 		String readText;
+	public static void searchCommand(Scanner sc) throws IOException {
 		String searchedWord = trimWord(sc);
+		String totalResult = performSearch(searchedWord);
+		showMessage("SEARCH",totalResult);
+
+	}
+
+	public static String performSearch(String searchedWord) throws IOException {
 		BufferedReader in = new BufferedReader(new FileReader(givenFileName));
+		String readText;
 		int lineNo = START_LINE;
 		int totalResult = 0;
 		while ((readText = in.readLine()) != null) {
-			if (readText.toLowerCase().contains(searchedWord.toLowerCase())) {
+			if (wordIsFound(readText,searchedWord)) {
 				System.out.println(lineNo + ". " + readText);
 				totalResult++;
 				lineNo++;
 			}
 		}
-		System.out.println("Total results : " + (totalResult));
 		in.close();
+		return Integer.toString(totalResult);
+	}
+	
+	public static boolean wordIsFound(String text, String searchedWord) {
+		return text.toLowerCase().contains(searchedWord.toLowerCase());
 	}
 
 	/**
@@ -380,13 +391,18 @@ public class TextBuddy {
 			System.out.println("deleted from " + givenFileName + ": \"" + item + "\"");
 		} else if (message.equalsIgnoreCase("EMPTY")) {
 			System.out.println(givenFileName + " is empty");
+		} else if (message.equalsIgnoreCase("SEARCH")) {
+			if (item.equals(Integer.toString(EMPTY))) {
+				System.out.println("No such word found!");
+			} else {
+				System.out.println("Total results : " + item);
+			}
 		} else {
 			System.out.println(message);
 		}
 	}
 
-	private static void sortCommand() throws IOException {
-		// TODO Auto-generated method stub
+	public static void sortCommand() throws IOException {
 		String readText;
 		ArrayList<String> toBeSortedList = new ArrayList<String>();
 		BufferedReader in = new BufferedReader(new FileReader(givenFileName));
@@ -406,6 +422,8 @@ public class TextBuddy {
 		System.out.println("File is sorted!");
 		in.close();
 	}
+	
+	
 
 	/**
 	 * Constantly get commands from user and execute it correctly.
@@ -466,8 +484,7 @@ public class TextBuddy {
 	 */
 	public static String writeTextToFile(Scanner sc) throws IOException {
 		String textToBeWritten = trimWord(sc);
-		PrintWriter fw = new PrintWriter(new BufferedWriter(new FileWriter(
-				givenFileName, true)));
+		PrintWriter fw = new PrintWriter(new BufferedWriter(new FileWriter(givenFileName, true)));
 		fw.println(textToBeWritten);
 		fw.close();
 		updateTotalLines(INCREASE_LINE);
