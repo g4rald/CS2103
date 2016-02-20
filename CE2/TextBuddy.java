@@ -278,7 +278,7 @@ public class TextBuddy {
 	/**
 	 * Extract the data in the sorted arraylist.
 	 */
-	public static void extractSortedText(ArrayList<String> sortedList) {
+	public static String extractSortedText(ArrayList<String> sortedList) {
 		for (int i = 0; i < sortedList.size(); i++) {
 			if (i == 0) {
 				storeUpdatedText(sortedList.get(i), true);
@@ -286,6 +286,7 @@ public class TextBuddy {
 				storeUpdatedText(sortedList.get(i), false);
 			}
 		}
+		return updatedText;
 	}
 
 	/**
