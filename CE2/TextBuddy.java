@@ -78,22 +78,22 @@ public class TextBuddy {
 	 */
 	public static void addCommand(Scanner sc) throws IOException {
 		String text = writeTextToFile(sc);
-		showMessage("ADDED", text);
+		printMessage(messageType("ADDED", text));
 	}
-
+	
 	/**
 	 * Check whether the argument user entered beginning is valid. If invalid,
 	 * show invalid message. Otherwise, initialize the file for manipulation.
 	 */
 	public static void checkCorrectArguments(String[] fileName) {
 		if (noArgumentsEntered(fileName)) {
-			showMessage(MESSAGE_NO_ARGUMENTS, null);
+			printMessage(messageType(MESSAGE_NO_ARGUMENTS, null));
 			exitCommand();
 		} else if (insufficentFileLength(fileName[0])) {
-			showMessage(MESSAGE_INVALID_ARGUMENT, null);
+			printMessage(messageType(MESSAGE_INVALID_ARGUMENT, null));
 			exitCommand();
 		} else if (fileExtensionWrong(fileName[0])) {
-			showMessage(MESSAGE_INVALID_EXTENSION, null);
+			printMessage(messageType(MESSAGE_INVALID_EXTENSION, null));
 			exitCommand();
 		} else {
 			initialiseFile(fileName[0]);
@@ -108,7 +108,7 @@ public class TextBuddy {
 		checkFileIsEmpty();
 
 		if (isFileEmpty) {
-			showMessage("EMPTY", null);
+			printMessage(messageType("EMPTY", null));
 		} else {
 			displayFileContent();
 		}
@@ -136,7 +136,7 @@ public class TextBuddy {
 		try {
 			int lineNumber = sc.nextInt();
 			if (isInvalidLineNumber(lineNumber)) {
-				showMessage(MESSAGE_INVALID_COMMAND, null);
+				printMessage(messageType(MESSAGE_INVALID_COMMAND, null));
 				isValidDelete = false;
 				return INVALID_LINE_NUMBER;
 			} else {
@@ -144,7 +144,7 @@ public class TextBuddy {
 				return lineNumber;
 			}
 		} catch (InputMismatchException e) {
-			showMessage(MESSAGE_INVALID_COMMAND, null);
+			printMessage(messageType(MESSAGE_INVALID_COMMAND, null));
 			isValidDelete = false;
 			return INVALID_LINE_NUMBER;
 		}
@@ -155,7 +155,7 @@ public class TextBuddy {
 	 */
 	public static void clearCommand() throws IOException {
 		clearTextInFile();
-		showMessage("CLEAR", givenFileName);
+		printMessage(messageType("CLEAR", givenFileName));
 	}
 
 	/**
@@ -190,7 +190,7 @@ public class TextBuddy {
 		String text;
 		while ((text = in.readLine()) != null) {
 			if (currentLine == lineToDelete) {
-				showMessage("DELETE", text);
+				printMessage(messageType("DELETE", text));
 				updateTotalLines(DECREASE_LINE);
 			} else {
 				storeUpdatedText(text, isNewFirstLineInFile);
@@ -326,7 +326,7 @@ public class TextBuddy {
 	 * Display invalid message if user entered an invalid command.
 	 */
 	public static void invalidCommand() {
-		showMessage(MESSAGE_INVALID_COMMAND, null);
+		printMessage(messageType(MESSAGE_INVALID_COMMAND, null));
 	}
 
 	/**
@@ -337,12 +337,36 @@ public class TextBuddy {
 	}
 
 	/**
+	 * Display the different kind of possible messages types for user.
+	 */
+	public static String messageType(String message, String item) {
+		if (message.equalsIgnoreCase("ADDED")) {
+			return "added to " + givenFileName + ": \"" + item + "\"";
+		} else if (message.equalsIgnoreCase("CLEAR")) {
+			return "all content deleted from " + givenFileName;
+		} else if (message.equalsIgnoreCase("DELETE")) {
+			return "deleted from " + givenFileName + ": \"" + item + "\"";
+		} else if (message.equalsIgnoreCase("EMPTY")) {
+			return givenFileName + " is empty";
+		} else if (message.equalsIgnoreCase("SORT")) {
+			return givenFileName + " is sorted.";
+		} else if (message.equalsIgnoreCase("SEARCH")) {
+			if (item.equals(Integer.toString(EMPTY))) {
+				return "No such word found!";
+			} else {
+				return "Total results : " + item;
+			}
+		} else {
+			return message;
+		}
+	}
+	
+	/**
 	 * Check if the user did not entered any arguments.
 	 */
 	public static boolean noArgumentsEntered(String[] fileName) {
 		return (fileName.length == EMPTY);
 	}
-	
 	/**
 	 * Performs a search of the given word and display lines containing it
 	 */
@@ -363,38 +387,20 @@ public class TextBuddy {
 	}
 	
 	/**
+	 * Print the given message tpye
+	 */
+	public static void printMessage(String message) {
+		System.out.println(message);
+	}
+
+	/**
 	 * Get user searched word, perform search and display results
 	 */
 	public static void searchCommand(Scanner sc) throws IOException {
 		String searchedWord = trimWord(sc);
 		String totalResult = performSearch(searchedWord);
-		showMessage("SEARCH",totalResult);
+		printMessage(messageType("SEARCH",totalResult));
 
-	}
-
-	/**
-	 * Display the different kind of possible messages for user.
-	 */
-	public static void showMessage(String message, String item) {
-		if (message.equalsIgnoreCase("ADDED")) {
-			System.out.println("added to " + givenFileName + ": \"" + item + "\"");
-		} else if (message.equalsIgnoreCase("CLEAR")) {
-			System.out.println("all content deleted from " + givenFileName);
-		} else if (message.equalsIgnoreCase("DELETE")) {
-			System.out.println("deleted from " + givenFileName + ": \"" + item + "\"");
-		} else if (message.equalsIgnoreCase("EMPTY")) {
-			System.out.println(givenFileName + " is empty");
-		} else if (message.equalsIgnoreCase("SORT")) {
-			System.out.println(givenFileName + " is sorted.");
-		} else if (message.equalsIgnoreCase("SEARCH")) {
-			if (item.equals(Integer.toString(EMPTY))) {
-				System.out.println("No such word found!");
-			} else {
-				System.out.println("Total results : " + item);
-			}
-		} else {
-			System.out.println(message);
-		}
 	}
 
 	/**
@@ -412,7 +418,7 @@ public class TextBuddy {
 		ArrayList<String> sortedList = sortFile();
 		extractSortedText(sortedList);
 		updateFile(updatedText);
-		showMessage("SORT",givenFileName);
+		printMessage(messageType("SORT",givenFileName));
 	}
 	
 	/**
