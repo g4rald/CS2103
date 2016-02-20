@@ -220,14 +220,20 @@ public class TextBuddy {
 	 */
 	public static String displayFileContent() throws IOException {
 		String readText;
+		String displayText = "";
 		int lineNumber = START_LINE;
 		BufferedReader in = new BufferedReader(new FileReader(givenFileName));
 		while ((readText = in.readLine()) != null) {
+			if (lineNumber==START_LINE) {
+				displayText += lineNumber + ". " + readText;
+			} else {
+				displayText += "\n"+lineNumber + ". " + readText;
+			}
 			System.out.println(lineNumber + ". " + readText);
 			lineNumber++;
 		}
 		in.close();
-		return SUCCESS;
+		return displayText;
 	}
 
 	/**
