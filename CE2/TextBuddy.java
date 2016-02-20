@@ -91,7 +91,7 @@ public class TextBuddy {
 		showWelcomeMessage();
 		startProgram();
 	}
-
+	
 	/**
 	 * Add the text user entered into the file and display the added message.
 	 */
@@ -281,6 +281,16 @@ public class TextBuddy {
 		System.exit(0);
 	}
 
+	public static void extractSortedText(ArrayList<String> sortedList) {
+		for (int i = 0; i < sortedList.size(); i++) {
+			if (i == 0) {
+				storeUpdatedText(sortedList.get(i), true);
+			} else {
+				storeUpdatedText(sortedList.get(i), false);
+			}
+		}
+	}
+
 	/**
 	 * Check if the file name does not end with ".txt".
 	 */
@@ -351,19 +361,11 @@ public class TextBuddy {
 		return (fileName.length == EMPTY);
 	}
 
-		String readText;
-	public static void searchCommand(Scanner sc) throws IOException {
-		String searchedWord = trimWord(sc);
-		String totalResult = performSearch(searchedWord);
-		showMessage("SEARCH",totalResult);
-
-	}
-
 	public static String performSearch(String searchedWord) throws IOException {
 		BufferedReader in = new BufferedReader(new FileReader(givenFileName));
 		String readText;
 		int lineNo = START_LINE;
-		int totalResult = 0;
+		int totalResult = EMPTY;
 		while ((readText = in.readLine()) != null) {
 			if (wordIsFound(readText,searchedWord)) {
 				System.out.println(lineNo + ". " + readText);
@@ -375,8 +377,11 @@ public class TextBuddy {
 		return Integer.toString(totalResult);
 	}
 	
-	public static boolean wordIsFound(String text, String searchedWord) {
-		return text.toLowerCase().contains(searchedWord.toLowerCase());
+	public static void searchCommand(Scanner sc) throws IOException {
+		String searchedWord = trimWord(sc);
+		String totalResult = performSearch(searchedWord);
+		showMessage("SEARCH",totalResult);
+
 	}
 
 	/**
@@ -391,6 +396,8 @@ public class TextBuddy {
 			System.out.println("deleted from " + givenFileName + ": \"" + item + "\"");
 		} else if (message.equalsIgnoreCase("EMPTY")) {
 			System.out.println(givenFileName + " is empty");
+		} else if (message.equalsIgnoreCase("SORT")) {
+			System.out.println(givenFileName + " is sorted.");
 		} else if (message.equalsIgnoreCase("SEARCH")) {
 			if (item.equals(Integer.toString(EMPTY))) {
 				System.out.println("No such word found!");
@@ -402,7 +409,21 @@ public class TextBuddy {
 		}
 	}
 
+	/**
+	 * Display the welcome messsage.
+	 */
+	public static void showWelcomeMessage() {
+		System.out.println("Welcome to TextBuddy. " + givenFileName + " is ready for use");
+	}
+
 	public static void sortCommand() throws IOException {
+		ArrayList<String> sortedList = sortFile();
+		extractSortedText(sortedList);
+		updateFile(updatedText);
+		showMessage("SORT",givenFileName);
+	}
+	
+	public static ArrayList<String> sortFile() throws IOException {
 		String readText;
 		ArrayList<String> toBeSortedList = new ArrayList<String>();
 		BufferedReader in = new BufferedReader(new FileReader(givenFileName));
@@ -410,17 +431,8 @@ public class TextBuddy {
 			toBeSortedList.add(readText);
 		}
 		Collections.sort(toBeSortedList, String.CASE_INSENSITIVE_ORDER);
-		for (int i = 0; i < toBeSortedList.size(); i++) {
-			if (i == 0) {
-				storeUpdatedText(toBeSortedList.get(i), true);
-			} else {
-				storeUpdatedText(toBeSortedList.get(i), false);
-			}
-		}
-		getTotalLinesInFile();
-		updateFile(updatedText);
-		System.out.println("File is sorted!");
 		in.close();
+		return toBeSortedList;
 	}
 	
 	
@@ -455,7 +467,8 @@ public class TextBuddy {
 	/**
 	 * Replace the file content with the updated string.
 	 */
-	public static void updateFile(String text) throws FileNotFoundException {
+	public static void updateFile(String text) throws IOException {
+		getTotalLinesInFile();
 		PrintWriter fw = new PrintWriter(givenFileName);
 		if (totalLines != EMPTY) {
 			fw.println(text);
@@ -471,11 +484,8 @@ public class TextBuddy {
 		totalLines = totalLines + value;
 	}
 
-	/**
-	 * Display the welcome messsage.
-	 */
-	public static void showWelcomeMessage() {
-		System.out.println("Welcome to TextBuddy. " + givenFileName + " is ready for use");
+	public static boolean wordIsFound(String text, String searchedWord) {
+		return text.toLowerCase().contains(searchedWord.toLowerCase());
 	}
 
 	/**
