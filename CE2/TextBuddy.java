@@ -137,7 +137,6 @@ public class TextBuddy {
 		try {
 			int lineNumber = sc.nextInt();
 			if (isInvalidLineNumber(lineNumber)) {
-				printMessage(messageType(MESSAGE_INVALID_COMMAND, null));
 				isValidDelete = false;
 				return INVALID_LINE_NUMBER;
 			} else {
@@ -145,7 +144,6 @@ public class TextBuddy {
 				return lineNumber;
 			}
 		} catch (InputMismatchException e) {
-			printMessage(messageType(MESSAGE_INVALID_COMMAND, null));
 			isValidDelete = false;
 			return INVALID_LINE_NUMBER;
 		}
