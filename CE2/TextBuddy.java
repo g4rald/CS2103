@@ -44,40 +44,21 @@ public class TextBuddy {
 	static final String MESSAGE_INVALID_EXTENSION = "Invalid file extension entered." + MESSAGE_CORRECT_USAGE;
 	static final String MESSAGE_NO_ARGUMENTS = "No arguments entered. Please enter argument." + MESSAGE_CORRECT_USAGE;
 
-	// to indicate if the line number to be deleted is invalid (negative
-	// number/wrong format)
+	// list of parameters for file
 	static final int INVALID_LINE_NUMBER = -99;
-
-	// to indicate the minimum file length of a file
 	static final int MINIMUM_FILE_LENGTH = 4;
-
-	// to indicate if is empty
 	static final int EMPTY = 0;
-
-	// to indicate the starting line
 	static final int START_LINE = 1;
-
-	// to indicate total lines increase by 1
 	static final int INCREASE_LINE = 1;
-
-	// to indicate total lines decrease by -1
 	static final int DECREASE_LINE = -1;
-
-	// to indicate if the file does not content any text content (i.e file is
-	// empty)
 	static boolean isFileEmpty = true;
-
-	// to indicate if the delete command is valid
 	static boolean isValidDelete = true;
-
-	// to indicate the total lines in the file currently
-	static int totalLines = 0;
+	static int totalLinesInFile = 0;
 
 	// to indicate the given file name
 	static String givenFileName = "";
 
-	// to indicate the updated text that will replace the text content in file
-	// (for delete command)
+	// updated text that will replace the text content in file
 	static String updatedText = "";
 
 	static Scanner sc = new Scanner(System.in);
@@ -198,9 +179,8 @@ public class TextBuddy {
 	}
 
 	/**
-	 * Read line by line of the file and store into a string. If the line is
-	 * what the user specified to delete, exclude the line from storing into the
-	 * string. Update/Replace the file with the new updated string.
+	 * Read the file, delete/ignore the line indicated by user,
+	 * and update the file.
 	 */
 	public static void deleteLineAndUpdateFile(int lineToDelete)
 			throws IOException {
@@ -281,6 +261,9 @@ public class TextBuddy {
 		System.exit(0);
 	}
 
+	/**
+	 * Extract the data in the sorted arraylist.
+	 */
 	public static void extractSortedText(ArrayList<String> sortedList) {
 		for (int i = 0; i < sortedList.size(); i++) {
 			if (i == 0) {
@@ -316,9 +299,8 @@ public class TextBuddy {
 	public static void getTotalLinesInFile() throws IOException {
 		checkFileIsEmpty();
 		if (!isFileEmpty) {
-			BufferedReader in = new BufferedReader(
-					new FileReader(givenFileName));
-			totalLines = EMPTY;
+			BufferedReader in = new BufferedReader(new FileReader(givenFileName));
+			totalLinesInFile = EMPTY;
 			while (in.readLine() != null) {
 				updateTotalLines(INCREASE_LINE);
 			}
@@ -351,7 +333,7 @@ public class TextBuddy {
 	 * Check if line number is within range.
 	 */
 	public static boolean invalidLineNumber(int lineNumber) {
-		return lineNumber <= EMPTY || lineNumber > totalLines;
+		return lineNumber <= EMPTY || lineNumber > totalLinesInFile;
 	}
 
 	/**
@@ -360,7 +342,10 @@ public class TextBuddy {
 	public static boolean noArgumentsEntered(String[] fileName) {
 		return (fileName.length == EMPTY);
 	}
-
+	
+	/**
+	 * Performs a search of the given word and display lines containing it
+	 */
 	public static String performSearch(String searchedWord) throws IOException {
 		BufferedReader in = new BufferedReader(new FileReader(givenFileName));
 		String readText;
@@ -377,6 +362,9 @@ public class TextBuddy {
 		return Integer.toString(totalResult);
 	}
 	
+	/**
+	 * Get user searched word, perform search and display results
+	 */
 	public static void searchCommand(Scanner sc) throws IOException {
 		String searchedWord = trimWord(sc);
 		String totalResult = performSearch(searchedWord);
@@ -416,6 +404,10 @@ public class TextBuddy {
 		System.out.println("Welcome to TextBuddy. " + givenFileName + " is ready for use");
 	}
 
+	/**
+	 * Get the data in file and put in arraylist for sorting, 
+	 * extract the sorted data, update the file and display message.
+	 */
 	public static void sortCommand() throws IOException {
 		ArrayList<String> sortedList = sortFile();
 		extractSortedText(sortedList);
@@ -423,6 +415,9 @@ public class TextBuddy {
 		showMessage("SORT",givenFileName);
 	}
 	
+	/**
+	 * Get data in file for sort and return a sorted arraylist.
+	 */
 	public static ArrayList<String> sortFile() throws IOException {
 		String readText;
 		ArrayList<String> toBeSortedList = new ArrayList<String>();
@@ -434,8 +429,6 @@ public class TextBuddy {
 		in.close();
 		return toBeSortedList;
 	}
-	
-	
 
 	/**
 	 * Constantly get commands from user and execute it correctly.
@@ -458,6 +451,9 @@ public class TextBuddy {
 		}
 	}
 	
+	/**
+	 * Trim the given word.
+	 */
 	public static String trimWord(Scanner sc) {
 		String word = sc.nextLine();
 		String trimmedWord = word.trim();
@@ -470,7 +466,7 @@ public class TextBuddy {
 	public static void updateFile(String text) throws IOException {
 		getTotalLinesInFile();
 		PrintWriter fw = new PrintWriter(givenFileName);
-		if (totalLines != EMPTY) {
+		if (totalLinesInFile != EMPTY) {
 			fw.println(text);
 		}
 		fw.close();
@@ -481,15 +477,18 @@ public class TextBuddy {
 	 * Increase/decrease total lines in file currently by 'value'.
 	 */
 	public static void updateTotalLines(int value) {
-		totalLines = totalLines + value;
+		totalLinesInFile = totalLinesInFile + value;
 	}
 
+	/**
+	 * Indicate if the searched word is found.
+	 */
 	public static boolean wordIsFound(String text, String searchedWord) {
 		return text.toLowerCase().contains(searchedWord.toLowerCase());
 	}
 
 	/**
-	 * Remove any leading/trailing whitespace of the text user entered. Add the
+	 * Remove leading/trailing whitespace text. Add the
 	 * text into file and update total lines in file.
 	 */
 	public static String writeTextToFile(Scanner sc) throws IOException {
