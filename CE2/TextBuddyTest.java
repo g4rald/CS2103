@@ -116,7 +116,7 @@ public class TextBuddyTest {
 		String expected = "1. haha\n2. lol";
 		assertEquals(expected,TextBuddy.executeCommand(sc, command1));
 	}
-	
+		
 	@Test
 	public void testInvalidCommand() throws IOException {
 		Scanner sc = new Scanner(System.in);
@@ -145,12 +145,22 @@ public class TextBuddyTest {
 		assertEquals(expected,TextBuddy.executeCommand(sc3, command1));
 	}
 	
+	@Test
+	public void testDeleteInvalid() throws IOException {
+		String command1 = "add";
+		Scanner sc = new Scanner("stupid dog");
+		TextBuddy.executeCommand(sc, command1);
+		String command2 = "delete";
+		Scanner sc3 = new Scanner("2");
+		String expected = "Invalid command! Please retry.";
+		assertEquals(expected,TextBuddy.executeCommand(sc3, command2));
+	}
+	
 	@After
 	public void deleteFile() throws IOException {
 		File file = new File("abc.txt");
 		TextBuddy.clearCommand();
 		file.delete();
 	}
-
 
 }

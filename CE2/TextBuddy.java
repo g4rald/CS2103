@@ -30,7 +30,8 @@ import java.util.*;
  * "exit" - exits the program
  * 
  * ============== Assumptions ============== 
- * User will ALWAYS exit the program by typing command : exit
+ * 1) User will ALWAYS enter the correct format for the commands.
+ * 2) User will ALWAYS exit the program by typing command : exit
  * 
  * @author GERALD THAM WAI KIT
  *
@@ -81,7 +82,7 @@ public class TextBuddy {
 		String text = writeTextToFile(sc);
 		return printMessage(messageType("ADDED", text));
 	}
-	
+
 	/**
 	 * Check whether the argument user entered beginning is valid. If invalid,
 	 * show invalid message. Otherwise, initialize the file for manipulation.
@@ -174,18 +175,16 @@ public class TextBuddy {
 		int lineNumberToDelete = checkValidLineNumber(sc);
 		if (isValidDelete) {
 			return deleteLineAndUpdateFile(lineNumberToDelete);
-		}
-		else {
+		} else {
 			return printMessage(messageType(MESSAGE_INVALID_COMMAND, null));
 		}
 	}
 
 	/**
-	 * Read the file, delete/ignore the line indicated by user,
-	 * and update the file.
+	 * Read the file, delete/ignore the line indicated by user, and update the
+	 * file.
 	 */
-	public static String deleteLineAndUpdateFile(int lineToDelete)
-			throws IOException {
+	public static String deleteLineAndUpdateFile(int lineToDelete) throws IOException {
 		BufferedReader in = new BufferedReader(new FileReader(givenFileName));
 		int currentLine = START_LINE;
 		boolean isNewFirstLineInFile = true;
@@ -222,10 +221,10 @@ public class TextBuddy {
 		int lineNumber = START_LINE;
 		BufferedReader in = new BufferedReader(new FileReader(givenFileName));
 		while ((readText = in.readLine()) != null) {
-			if (lineNumber==START_LINE) {
+			if (lineNumber == START_LINE) {
 				displayText += lineNumber + ". " + readText;
 			} else {
-				displayText += "\n"+lineNumber + ". " + readText;
+				displayText += "\n" + lineNumber + ". " + readText;
 			}
 			System.out.println(lineNumber + ". " + readText);
 			lineNumber++;
@@ -237,8 +236,7 @@ public class TextBuddy {
 	/**
 	 * Execute the user command.
 	 */
-	public static String executeCommand(Scanner sc, String command)
-			throws IOException {
+	public static String executeCommand(Scanner sc, String command) throws IOException {
 		if (command.equalsIgnoreCase("add")) {
 			return addCommand(sc);
 		} else if (command.equalsIgnoreCase("display")) {
@@ -380,6 +378,7 @@ public class TextBuddy {
 	public static boolean noArgumentsEntered(String[] fileName) {
 		return (fileName.length == EMPTY);
 	}
+	
 	/**
 	 * Performs a search of the given word and display lines containing it
 	 */
@@ -389,7 +388,7 @@ public class TextBuddy {
 		int lineNo = START_LINE;
 		int totalResult = EMPTY;
 		while ((readText = in.readLine()) != null) {
-			if (wordIsFound(readText,searchedWord)) {
+			if (wordIsFound(readText, searchedWord)) {
 				System.out.println(lineNo + ". " + readText);
 				totalResult++;
 				lineNo++;
@@ -400,7 +399,7 @@ public class TextBuddy {
 	}
 	
 	/**
-	 * Print the given message tpye
+	 * Print the given message type
 	 */
 	public static String printMessage(String message) {
 		System.out.println(message);
@@ -413,7 +412,7 @@ public class TextBuddy {
 	public static String searchCommand(Scanner sc) throws IOException {
 		String searchedWord = trimWord(sc);
 		String totalResult = performSearch(searchedWord);
-		return printMessage(messageType("SEARCH",totalResult));
+		return printMessage(messageType("SEARCH", totalResult));
 	}
 
 	/**
@@ -424,14 +423,14 @@ public class TextBuddy {
 	}
 
 	/**
-	 * Get the data in file and put in arraylist for sorting, 
-	 * extract the sorted data, update the file and display message.
+	 * Get the data in file and put in arraylist for sorting, extract the sorted
+	 * data, update the file and display message.
 	 */
 	public static String sortCommand() throws IOException {
 		ArrayList<String> sortedList = sortFile();
 		extractSortedText(sortedList);
 		updateFile(updatedText);
-		return printMessage(messageType("SORT",givenFileName));
+		return printMessage(messageType("SORT", givenFileName));
 	}
 	
 	/**
@@ -483,7 +482,6 @@ public class TextBuddy {
 	 * Replace the file content with the updated string.
 	 */
 	public static void updateFile(String text) throws IOException {
-		getTotalLinesInFile();
 		PrintWriter fw = new PrintWriter(givenFileName);
 		if (totalLinesInFile != EMPTY) {
 			fw.println(text);
@@ -497,6 +495,7 @@ public class TextBuddy {
 	 */
 	public static void updateTotalLines(int value) {
 		totalLinesInFile = totalLinesInFile + value;
+		System.out.println("Total lines : "+totalLinesInFile);
 	}
 
 	/**
@@ -507,8 +506,8 @@ public class TextBuddy {
 	}
 
 	/**
-	 * Remove leading/trailing whitespace text. Add the
-	 * text into file and update total lines in file.
+	 * Remove leading/trailing whitespace text. Add the text into file and
+	 * update total lines in file.
 	 */
 	public static String writeTextToFile(Scanner sc) throws IOException {
 		String textToBeWritten = trimWord(sc);
